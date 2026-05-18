@@ -18,10 +18,10 @@
     --line:#2a2a30;
     --txt:#f4f4f5;
     --txt-dim:#8a8a93;
-    --accent:#d4a574;
-    --accent-soft:#2a2118;
-    --green:#5fb87a;
-    --red:#d56b6b;
+    --accent:#c8ccd4;
+    --accent-soft:#23252b;
+    --green:#6ec08a;
+    --red:#d97474;
     --safe-top:env(safe-area-inset-top);
     --safe-bot:env(safe-area-inset-bottom);
   }
@@ -37,7 +37,7 @@
   }
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(120% 80% at 50% 0%, #1c1812 0%, transparent 55%);
+    background:radial-gradient(120% 80% at 50% 0%, #1e2025 0%, transparent 55%);
   }
   #app{
     position:relative;z-index:1;
@@ -46,9 +46,7 @@
     padding-bottom:calc(var(--safe-bot) + 90px);
     min-height:100%;
   }
-  header{
-    padding:0 22px 18px;
-  }
+  header{padding:0 22px 18px;}
   header .greeting{font-size:13px;color:var(--txt-dim);letter-spacing:.04em;text-transform:uppercase;}
   header h1{
     font-family:'SF Pro Display',-apple-system,sans-serif;
@@ -63,13 +61,13 @@
   .tab{
     flex:1;text-align:center;padding:10px 0;border-radius:10px;
     font-size:14px;font-weight:600;color:var(--txt-dim);
-    transition:.18s;cursor:pointer;
+    transition:.2s ease;cursor:pointer;
   }
   .tab.active{background:var(--accent-soft);color:var(--accent);}
-  /* ---- Cards ---- */
-  .view{display:none;padding:0 18px;animation:fade .25s ease;}
-  .view.active{display:block;}
-  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  /* ---- Views ---- */
+  .view{display:none;padding:0 18px;}
+  .view.active{display:block;animation:fade .28s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
   .balance-card{
     background:linear-gradient(150deg,var(--surface-2),var(--surface));
     border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px;
@@ -80,6 +78,7 @@
     font-size:38px;font-weight:700;margin-top:6px;letter-spacing:-.02em;
   }
   .balance-card .sub{display:flex;gap:18px;margin-top:14px;font-size:13px;}
+  .balance-card .sub span{color:var(--txt-dim);font-size:12px;}
   .balance-card .sub b{display:block;font-size:16px;font-weight:600;margin-top:2px;}
   .pos{color:var(--green);}
   .neg{color:var(--red);}
@@ -87,11 +86,35 @@
     font-size:13px;color:var(--txt-dim);text-transform:uppercase;
     letter-spacing:.06em;margin:22px 4px 10px;font-weight:600;
   }
+  /* ---- Donut chart ---- */
+  .chart-card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:20px;padding:22px;margin-bottom:6px;
+  }
+  .donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;}
+  .donut{position:relative;width:150px;height:150px;flex-shrink:0;}
+  .donut svg{transform:rotate(-90deg);overflow:visible;}
+  .donut svg circle{
+    transition:stroke-dasharray .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .donut .center{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+  }
+  .donut .center .big{font-family:'SF Pro Display',sans-serif;font-size:19px;font-weight:700;}
+  .donut .center .cap{font-size:10px;color:var(--txt-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+  .legend{flex:1;min-width:160px;display:flex;flex-direction:column;gap:9px;}
+  .legend .lg{display:flex;align-items:center;gap:10px;font-size:13px;animation:fade .4s ease;}
+  .legend .dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .legend .lg .nm{flex:1;font-weight:600;}
+  .legend .lg .vl{color:var(--txt-dim);font-size:12px;text-align:right;line-height:1.3;}
+  .legend .lg .vl b{display:block;color:var(--txt);font-size:13px;}
   /* ---- List items ---- */
   .item{
     display:flex;align-items:center;gap:14px;
     background:var(--surface);border:1px solid var(--line);
     border-radius:14px;padding:14px 16px;margin-bottom:8px;
+    animation:fade .3s ease;
   }
   .item .ic{
     width:38px;height:38px;border-radius:11px;flex-shrink:0;
@@ -102,40 +125,37 @@
   .item .meta .t{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .item .meta .d{font-size:12px;color:var(--txt-dim);margin-top:2px;}
   .item .val{font-size:15px;font-weight:700;white-space:nowrap;}
-  .item .del{
-    color:var(--txt-dim);font-size:18px;padding:4px 2px 4px 10px;cursor:pointer;
-  }
+  .item .del{color:var(--txt-dim);font-size:18px;padding:4px 2px 4px 10px;cursor:pointer;transition:.15s;}
+  .item .del:active{transform:scale(.8);color:var(--red);}
   .empty{
     text-align:center;color:var(--txt-dim);font-size:14px;
     padding:38px 20px;border:1px dashed var(--line);border-radius:16px;
   }
-  /* ---- Category bars ---- */
-  .cat{margin-bottom:12px;}
-  .cat .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
-  .cat .bar{height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
-  .cat .bar i{display:block;height:100%;background:var(--accent);border-radius:4px;}
   /* ---- Floating add button ---- */
   .fab{
     position:fixed;left:50%;transform:translateX(-50%);
     bottom:calc(var(--safe-bot) + 20px);z-index:20;
-    background:var(--accent);color:#1a140b;
+    background:var(--accent);color:#101114;
     font-size:15px;font-weight:700;
     padding:15px 30px;border:none;border-radius:30px;
-    box-shadow:0 8px 28px rgba(212,165,116,.35);cursor:pointer;
+    box-shadow:0 8px 28px rgba(200,204,212,.28);cursor:pointer;
+    transition:transform .15s ease;
   }
+  .fab:active{transform:translateX(-50%) scale(.94);}
   /* ---- Modal ---- */
   .modal{
     position:fixed;inset:0;z-index:50;display:none;
     align-items:flex-end;justify-content:center;
     background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
   }
-  .modal.show{display:flex;}
+  .modal.show{display:flex;animation:fade .2s ease;}
   .sheet{
     width:100%;max-width:560px;
     background:var(--surface);border-radius:24px 24px 0 0;
     border-top:1px solid var(--line);
     padding:22px 22px calc(var(--safe-bot) + 26px);
-    animation:slideup .28s cubic-bezier(.2,.8,.2,1);
+    animation:slideup .3s cubic-bezier(.2,.8,.2,1);
+    max-height:90vh;overflow-y:auto;
   }
   @keyframes slideup{from{transform:translateY(100%);}to{transform:none;}}
   .sheet h2{font-size:19px;font-weight:700;margin-bottom:18px;}
@@ -145,33 +165,52 @@
   .field input,.field select{
     width:100%;background:var(--surface-2);border:1px solid var(--line);
     color:var(--txt);font-size:16px;padding:13px 14px;border-radius:12px;
-    font-family:inherit;
+    font-family:inherit;transition:border-color .15s ease;
   }
   .field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
+  .field input.money{font-family:'SF Pro Display',sans-serif;font-weight:700;font-size:20px;letter-spacing:.01em;}
   .seg{display:flex;gap:8px;margin-bottom:14px;}
   .seg button{
     flex:1;padding:11px 0;border-radius:11px;border:1px solid var(--line);
     background:var(--surface-2);color:var(--txt-dim);font-weight:600;
-    font-size:14px;cursor:pointer;font-family:inherit;
+    font-size:14px;cursor:pointer;font-family:inherit;transition:.18s ease;
   }
   .seg button.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
   .btn-primary{
-    width:100%;background:var(--accent);color:#1a140b;
+    width:100%;background:var(--accent);color:#101114;
     font-size:16px;font-weight:700;padding:15px;border:none;
     border-radius:14px;margin-top:6px;cursor:pointer;font-family:inherit;
+    transition:transform .15s ease;
   }
+  .btn-primary:active{transform:scale(.97);}
   .btn-ghost{
     width:100%;background:transparent;color:var(--txt-dim);
     font-size:14px;padding:12px;border:none;cursor:pointer;
     margin-top:4px;font-family:inherit;
   }
   /* ---- Tools row ---- */
-  .tools{display:flex;gap:8px;margin:18px 0 6px;}
+  .tools{display:flex;gap:8px;margin:18px 0 6px;flex-wrap:wrap;}
   .tools button{
-    flex:1;background:var(--surface);border:1px solid var(--line);
+    background:var(--surface);border:1px solid var(--line);
     color:var(--txt);font-size:13px;font-weight:600;padding:12px;
     border-radius:12px;cursor:pointer;font-family:inherit;
+    transition:.15s ease;
   }
+  .tools button:active{transform:scale(.96);}
+  .tools .wide{flex:1 1 100%;background:var(--accent-soft);color:var(--accent);border-color:transparent;}
+  .tools .half{flex:1;}
+  /* ---- All-sales table ---- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;margin-bottom:6px;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px;}
+  thead th{
+    background:var(--surface-2);color:var(--txt-dim);
+    font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+    text-align:left;padding:12px 14px;font-weight:600;white-space:nowrap;
+  }
+  tbody td{padding:12px 14px;border-top:1px solid var(--line);white-space:nowrap;}
+  tbody tr{animation:fade .3s ease;}
+  tbody tr:active{background:var(--surface-2);}
+  td.num{font-weight:600;text-align:right;}
 </style>
 </head>
 <body>
@@ -192,15 +231,24 @@
       <div class="label">Saldo do período</div>
       <div class="amount" id="diaSaldo">0,00 €</div>
       <div class="sub">
-        <div><span class="txt-dim" style="color:var(--txt-dim);font-size:12px;">Entradas</span>
-          <b class="pos" id="diaIn">0,00 €</b></div>
-        <div><span style="color:var(--txt-dim);font-size:12px;">Saídas</span>
-          <b class="neg" id="diaOut">0,00 €</b></div>
+        <div><span>Entradas</span><b class="pos" id="diaIn">0,00 €</b></div>
+        <div><span>Saídas</span><b class="neg" id="diaOut">0,00 €</b></div>
       </div>
     </div>
 
-    <div class="section-title">Por categoria</div>
-    <div id="diaCats"></div>
+    <div class="section-title">Gastos por categoria</div>
+    <div class="chart-card" id="chartCard">
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg width="150" height="150" viewBox="0 0 150 150" id="donutSvg"></svg>
+          <div class="center">
+            <div class="big" id="donutTotal">0,00 €</div>
+            <div class="cap">Total gasto</div>
+          </div>
+        </div>
+        <div class="legend" id="donutLegend"></div>
+      </div>
+    </div>
 
     <div class="section-title">Movimentos</div>
     <div id="diaList"></div>
@@ -212,16 +260,15 @@
       <div class="label">Total de vendas</div>
       <div class="amount" id="vTotal">0,00 €</div>
       <div class="sub">
-        <div><span style="color:var(--txt-dim);font-size:12px;">Nº vendas</span>
-          <b id="vCount">0</b></div>
-        <div><span style="color:var(--txt-dim);font-size:12px;">Lucro estimado</span>
-          <b class="pos" id="vLucro">0,00 €</b></div>
+        <div><span>Nº vendas</span><b id="vCount">0</b></div>
+        <div><span>Lucro estimado</span><b class="pos" id="vLucro">0,00 €</b></div>
       </div>
     </div>
 
     <div class="tools">
-      <button id="btnExport">⬇ Exportar Excel</button>
-      <button id="btnImport">⬆ Importar Excel</button>
+      <button class="wide" id="btnViewAll">📋 Ver Todas as Vendas</button>
+      <button class="half" id="btnExport">⬇ Exportar Excel</button>
+      <button class="half" id="btnImport">⬆ Importar Excel</button>
       <input type="file" id="fileIn" accept=".xlsx,.xls,.csv" hidden>
     </div>
 
@@ -245,8 +292,8 @@
       <input id="dDesc" placeholder="Ex: Almoço, Salário…">
     </div>
     <div class="field">
-      <label>Valor (€)</label>
-      <input id="dVal" type="number" inputmode="decimal" step="0.01" placeholder="0,00">
+      <label>Valor</label>
+      <input id="dVal" class="money" inputmode="numeric" placeholder="0,00 €">
     </div>
     <div class="field">
       <label>Categoria</label>
@@ -275,19 +322,19 @@
       <input id="vArt" placeholder="Ex: Casaco Nike">
     </div>
     <div class="field">
-      <label>Preço de venda (€)</label>
-      <input id="vPV" type="number" inputmode="decimal" step="0.01" placeholder="0,00">
+      <label>Preço de compra (custo)</label>
+      <input id="vPC" class="money" inputmode="numeric" placeholder="0,00 €">
     </div>
     <div class="field">
-      <label>Custo / compra (€) — opcional</label>
-      <input id="vPC" type="number" inputmode="decimal" step="0.01" placeholder="0,00">
+      <label>Preço de venda</label>
+      <input id="vPV" class="money" inputmode="numeric" placeholder="0,00 €">
     </div>
     <div class="field">
       <label>Plataforma</label>
       <select id="vPlat">
-        <option>Vinted</option><option>OLX</option>
-        <option>Instagram</option><option>Pessoalmente</option>
-        <option>Outro</option>
+        <option>Vinted</option><option>Rega</option>
+        <option>Vestiaire</option><option>CataWiki</option>
+        <option>Pessoal</option>
       </select>
     </div>
     <div class="field">
@@ -299,8 +346,26 @@
   </div>
 </div>
 
+<!-- ============ MODAL: ALL SALES ============ -->
+<div class="modal" id="modalAll">
+  <div class="sheet">
+    <h2>Todas as vendas</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Item</th><th>Plataforma</th><th>Compra</th>
+          <th>Venda</th><th>Lucro</th><th>Data</th>
+        </tr></thead>
+        <tbody id="allRows"></tbody>
+      </table>
+    </div>
+    <button class="btn-ghost" data-close>Fechar</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+/* ---------- Data layer ---------- */
 const DB={
   dia:JSON.parse(localStorage.getItem('fin_dia')||'[]'),
   vendas:JSON.parse(localStorage.getItem('fin_vendas')||'[]')
@@ -309,15 +374,59 @@ const save=()=>{
   localStorage.setItem('fin_dia',JSON.stringify(DB.dia));
   localStorage.setItem('fin_vendas',JSON.stringify(DB.vendas));
 };
+
+/* ---------- Helpers ---------- */
 const eur=n=>n.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
 const today=()=>new Date().toISOString().slice(0,10);
 const fmtD=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y}`;};
+const esc=s=>(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
 
-// date line
+/* Palette for chart categories */
+const PAL=['#c8ccd4','#8a909c','#6ec08a','#6b8caf','#d97474','#a9aeb8','#7d8a99','#5f6b7a'];
+
+/* ---------- Smart money input ----------
+   Stores raw cents in dataset.cents; displays "0,00 €" bank-style. */
+function attachMoney(el){
+  const fmt=()=>{
+    let cents=parseInt(el.dataset.cents||'0',10);
+    el.value=(cents/100).toLocaleString('pt-PT',
+      {minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+  };
+  el.dataset.cents='0';
+  el.addEventListener('focus',()=>{ // ensure caret stays at end
+    requestAnimationFrame(()=>el.setSelectionRange(el.value.length,el.value.length));
+  });
+  el.addEventListener('keydown',e=>{
+    if(e.key>='0'&&e.key<='9'){
+      e.preventDefault();
+      let c=parseInt(el.dataset.cents||'0',10);
+      c=c*10+parseInt(e.key,10);
+      if(c>99999999999)c=99999999999; // cap
+      el.dataset.cents=String(c);fmt();
+    }else if(e.key==='Backspace'){
+      e.preventDefault();
+      let c=parseInt(el.dataset.cents||'0',10);
+      c=Math.floor(c/10);
+      el.dataset.cents=String(c);fmt();
+    }else if(['Tab','Enter','ArrowLeft','ArrowRight'].includes(e.key)){
+      /* allow */
+    }else{e.preventDefault();}
+  });
+  el.addEventListener('click',()=>
+    el.setSelectionRange(el.value.length,el.value.length));
+  fmt();
+}
+const moneyVal=el=>parseInt(el.dataset.cents||'0',10)/100;
+const moneyReset=el=>{el.dataset.cents='0';
+  el.value=(0).toLocaleString('pt-PT',{minimumFractionDigits:2})+' €';};
+
+['dVal','vPC','vPV'].forEach(id=>attachMoney(document.getElementById(id)));
+
+/* ---------- Date line ---------- */
 document.getElementById('dateLine').textContent=
   new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'});
 
-// ---- Tabs ----
+/* ---------- Tabs ---------- */
 let view='dia';
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   view=t.dataset.view;
@@ -326,7 +435,49 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.getElementById('view-'+view).classList.add('active');
 });
 
-// ---- Render: Dia ----
+/* ---------- Donut chart ---------- */
+function renderDonut(cats,total){
+  const svg=document.getElementById('donutSvg');
+  const legend=document.getElementById('donutLegend');
+  document.getElementById('donutTotal').textContent=eur(total);
+  svg.innerHTML='';legend.innerHTML='';
+  const entries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const cx=75,cy=75,r=58,C=2*Math.PI*r;
+
+  if(!entries.length||total===0){
+    svg.innerHTML=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none"
+      stroke="var(--surface-2)" stroke-width="20"/>`;
+    legend.innerHTML='<div class="empty" style="padding:20px">Sem despesas registadas</div>';
+    return;
+  }
+  let offset=0;
+  entries.forEach(([name,val],i)=>{
+    const frac=val/total;
+    const len=frac*C;
+    const col=PAL[i%PAL.length];
+    const circ=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circ.setAttribute('cx',cx);circ.setAttribute('cy',cy);
+    circ.setAttribute('r',r);circ.setAttribute('fill','none');
+    circ.setAttribute('stroke',col);circ.setAttribute('stroke-width','20');
+    circ.setAttribute('stroke-dasharray',`0 ${C}`);
+    circ.setAttribute('stroke-dashoffset',-offset);
+    svg.appendChild(circ);
+    // animate in
+    requestAnimationFrame(()=>{
+      circ.setAttribute('stroke-dasharray',`${len} ${C-len}`);
+    });
+    offset+=len;
+    const pct=Math.round(frac*100);
+    legend.insertAdjacentHTML('beforeend',
+      `<div class="lg">
+        <span class="dot" style="background:${col}"></span>
+        <span class="nm">${esc(name)}</span>
+        <span class="vl"><b>${eur(val)}</b>${pct}%</span>
+      </div>`);
+  });
+}
+
+/* ---------- Render: Dia ---------- */
 function renderDia(){
   const inc=DB.dia.filter(x=>x.k==='in').reduce((s,x)=>s+x.v,0);
   const out=DB.dia.filter(x=>x.k==='out').reduce((s,x)=>s+x.v,0);
@@ -336,22 +487,10 @@ function renderDia(){
   const se=document.getElementById('diaSaldo');
   se.textContent=eur(sal);se.className='amount '+(sal>=0?'pos':'neg');
 
-  // categories (despesas)
   const cats={};
   DB.dia.filter(x=>x.k==='out').forEach(x=>cats[x.cat]=(cats[x.cat]||0)+x.v);
-  const cw=document.getElementById('diaCats');
-  const entries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){cw.innerHTML='<div class="empty">Sem despesas registadas</div>';}
-  else{
-    cw.innerHTML=entries.map(([c,v])=>{
-      const pct=out?Math.round(v/out*100):0;
-      return `<div class="cat"><div class="row"><span>${c}</span>
-        <span>${eur(v)} · ${pct}%</span></div>
-        <div class="bar"><i style="width:${pct}%"></i></div></div>`;
-    }).join('');
-  }
+  renderDonut(cats,out);
 
-  // list
   const lw=document.getElementById('diaList');
   if(!DB.dia.length){lw.innerHTML='<div class="empty">Toca em “Adicionar” para registar um movimento</div>';return;}
   lw.innerHTML=[...DB.dia].reverse().map((x,ri)=>{
@@ -367,7 +506,7 @@ function renderDia(){
   }).join('');
 }
 
-// ---- Render: Vendas ----
+/* ---------- Render: Vendas ---------- */
 function renderVendas(){
   const tot=DB.vendas.reduce((s,x)=>s+x.pv,0);
   const lucro=DB.vendas.reduce((s,x)=>s+(x.pv-(x.pc||0)),0);
@@ -389,11 +528,31 @@ function renderVendas(){
     </div>`;
   }).join('');
 }
-const esc=s=>(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+
+/* ---------- Render: All-sales table ---------- */
+function renderAllTable(){
+  const tb=document.getElementById('allRows');
+  if(!DB.vendas.length){
+    tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--txt-dim);padding:30px">Sem vendas registadas</td></tr>';
+    return;
+  }
+  tb.innerHTML=[...DB.vendas].reverse().map(x=>{
+    const luc=x.pv-(x.pc||0);
+    const lc=luc>=0?'pos':'neg';
+    return `<tr>
+      <td>${esc(x.art)}</td>
+      <td>${esc(x.plat)}</td>
+      <td class="num">${eur(x.pc||0)}</td>
+      <td class="num">${eur(x.pv)}</td>
+      <td class="num ${lc}">${eur(luc)}</td>
+      <td>${fmtD(x.date)}</td>
+    </tr>`;
+  }).join('');
+}
 
 function renderAll(){renderDia();renderVendas();}
 
-// ---- Delete (event delegation) ----
+/* ---------- Delete (event delegation) ---------- */
 document.body.addEventListener('click',e=>{
   const d=e.target.closest('.del');
   if(!d)return;
@@ -402,20 +561,29 @@ document.body.addEventListener('click',e=>{
   }
 });
 
-// ---- Modals ----
+/* ---------- Modals ---------- */
 const mDia=document.getElementById('modalDia');
 const mVen=document.getElementById('modalVenda');
+const mAll=document.getElementById('modalAll');
 function openModal(){
-  if(view==='dia'){document.getElementById('dDate').value=today();mDia.classList.add('show');}
-  else{document.getElementById('vDate').value=today();mVen.classList.add('show');}
+  if(view==='dia'){
+    document.getElementById('dDate').value=today();
+    moneyReset(document.getElementById('dVal'));
+    mDia.classList.add('show');
+  }else{
+    document.getElementById('vDate').value=today();
+    moneyReset(document.getElementById('vPC'));
+    moneyReset(document.getElementById('vPV'));
+    mVen.classList.add('show');
+  }
 }
 document.getElementById('fab').onclick=openModal;
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{
-  mDia.classList.remove('show');mVen.classList.remove('show');
+  mDia.classList.remove('show');mVen.classList.remove('show');mAll.classList.remove('show');
 });
-[mDia,mVen].forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('show');});
+[mDia,mVen,mAll].forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('show');});
 
-// segment in/out
+/* segment in/out */
 let curK='out';
 document.getElementById('segOut').onclick=()=>setSeg('out');
 document.getElementById('segIn').onclick=()=>setSeg('in');
@@ -424,44 +592,48 @@ function setSeg(k){curK=k;
   document.getElementById('segIn').classList.toggle('on',k==='in');
 }
 
-// save dia
+/* save dia */
 document.getElementById('saveDia').onclick=()=>{
   const desc=document.getElementById('dDesc').value.trim();
-  const v=parseFloat(document.getElementById('dVal').value);
+  const v=moneyVal(document.getElementById('dVal'));
   if(!desc||!(v>0)){alert('Preenche a descrição e um valor válido.');return;}
   DB.dia.push({k:curK,desc,v,cat:document.getElementById('dCat').value,
     date:document.getElementById('dDate').value||today()});
   save();renderAll();
-  document.getElementById('dDesc').value='';document.getElementById('dVal').value='';
+  document.getElementById('dDesc').value='';
   mDia.classList.remove('show');
 };
-// save venda
+/* save venda */
 document.getElementById('saveVenda').onclick=()=>{
   const art=document.getElementById('vArt').value.trim();
-  const pv=parseFloat(document.getElementById('vPV').value);
-  const pc=parseFloat(document.getElementById('vPC').value)||0;
+  const pv=moneyVal(document.getElementById('vPV'));
+  const pc=moneyVal(document.getElementById('vPC'));
   if(!art||!(pv>0)){alert('Preenche o artigo e o preço de venda.');return;}
   DB.vendas.push({art,pv,pc,plat:document.getElementById('vPlat').value,
     date:document.getElementById('vDate').value||today()});
   save();renderAll();
-  document.getElementById('vArt').value='';document.getElementById('vPV').value='';
-  document.getElementById('vPC').value='';
+  document.getElementById('vArt').value='';
   mVen.classList.remove('show');
 };
 
-// ---- Excel export ----
+/* ---------- View all sales ---------- */
+document.getElementById('btnViewAll').onclick=()=>{
+  renderAllTable();mAll.classList.add('show');
+};
+
+/* ---------- Excel export ---------- */
 document.getElementById('btnExport').onclick=()=>{
   if(!DB.vendas.length){alert('Não há vendas para exportar.');return;}
   const rows=DB.vendas.map(x=>({
-    Data:x.date,Artigo:x.art,'Preço Venda':x.pv,
-    'Custo':x.pc||0,'Lucro':x.pv-(x.pc||0),Plataforma:x.plat
+    Data:x.date,Artigo:x.art,'Preço Compra':x.pc||0,
+    'Preço Venda':x.pv,'Lucro':x.pv-(x.pc||0),Plataforma:x.plat
   }));
   const ws=XLSX.utils.json_to_sheet(rows);
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Vendas');
   XLSX.writeFile(wb,`vendas_${today()}.xlsx`);
 };
-// ---- Excel import ----
+/* ---------- Excel import ---------- */
 document.getElementById('btnImport').onclick=()=>document.getElementById('fileIn').click();
 document.getElementById('fileIn').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
@@ -474,18 +646,18 @@ document.getElementById('fileIn').onchange=e=>{
       let n=0;
       rows.forEach(rr=>{
         const art=rr.Artigo||rr.artigo||rr.Peça||rr.Peca;
-        const pv=parseFloat(rr['Preço Venda']||rr['Preco Venda']||rr.PV||rr.Preço||0);
+        const pv=parseFloat(rr['Preço Venda']||rr['Preco Venda']||rr.PV||0);
         if(art&&pv>0){
           DB.vendas.push({
             art:String(art),pv,
-            pc:parseFloat(rr.Custo||rr.custo||0)||0,
-            plat:String(rr.Plataforma||rr.plataforma||'Outro'),
+            pc:parseFloat(rr['Preço Compra']||rr['Preco Compra']||rr.Custo||rr.custo||0)||0,
+            plat:String(rr.Plataforma||rr.plataforma||'Pessoal'),
             date:String(rr.Data||rr.data||today()).slice(0,10)
           });n++;
         }
       });
       save();renderAll();
-      alert(n?`${n} vendas importadas.`:'Nenhuma linha válida encontrada. Verifica os nomes das colunas (Artigo, Preço Venda).');
+      alert(n?`${n} vendas importadas.`:'Nenhuma linha válida. Verifica as colunas (Artigo, Preço Venda).');
     }catch(err){alert('Erro a ler o ficheiro: '+err.message);}
     e.target.value='';
   };
@@ -494,7 +666,7 @@ document.getElementById('fileIn').onchange=e=>{
 
 renderAll();
 
-// register service worker
+/* register service worker */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
